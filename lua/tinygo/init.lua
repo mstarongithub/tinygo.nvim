@@ -1,11 +1,17 @@
-local M = {}
+local M = {
+    targetfile = ".tinygo",
+}
 
-function M.setup()
+function M.setup(opts)
 	local ok, goEnv = pcall(vim.fn.system, "go env -json")
 	if not ok then vim.print("go is not in the PATH..."); return end
 
 	local ok, goEnvJSON = pcall(vim.fn.json_decode, goEnv)
 	if not ok then vim.print("error parsing the go environment"); return end
+
+    if opts["targetfile"] then
+        M.targetfile = opts["targetfile"]
+    end
 
 	M["originalGOROOT"]  = goEnvJSON["GOROOT"]
 	M["originalGOFLAGS"] = goEnvJSON["GOFLAGS"]
@@ -30,6 +36,9 @@ function M.setup()
 	vim.api.nvim_create_user_command("TinyGoSetTarget", M.setTarget, {nargs = 1, complete = M.targetOptions})
 	vim.api.nvim_create_user_command("TinyGoTargets", M.printTargets, {nargs = 0})
 	vim.api.nvim_create_user_command("TinyGoEnv", M.printEnv, {nargs = 0})
+
+    vim.api.nvim_create_autocmd({"LspAttach"}, {once=true, pattern="*.go", callback=M.setTargetFromFile})
+    vim.api.nvim_create_autocmd({"BufWritePost"}, {pattern=M.targetfile, callback=M.setTargetFromFile})
 end
 
 -- As seen on https://neovim.io/doc/user/api.html#nvim_create_user_command(), autocompletions written in
@@ -113,6 +122,15 @@ function M.printEnv()
 		"Current Target: %q\nCurrent GOROOT: %q\nCurrent GOFLAGS: %q",
 		M["currentTarget"], M["currentGOROOT"], M["currentGOFLAGS"]
 	))
+end
+
+function M.setTargetFromFile()
+    local f = io.open(M.targetfile, "r")
+    if not f then
+        return
+    end
+    local target = f:read("l")
+    vim.cmd.TinyGoSetTarget(target)
 end
 
 return M
