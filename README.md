@@ -75,6 +75,11 @@ return {
 }
 ```
 
+## Options
+Addtionally you can provide the following options. 
+
+- `targetfile [optional]`: Defines the filename of the file this plugin autoloads its target from
+
 ## Usage
 This plugin provides three different user commands:
 
@@ -85,5 +90,9 @@ This plugin provides three different user commands:
 - `:TinyGoTargets`: This command will simply list available TinyGo targets, excluding `original`.
 
 - `:TinyGoEnv`: This commmand prints the currently configured target, `GOROOT` and `GOFLAGS`.
+
+Alternatively you can add a file (default: `.tinygo`) into your cwd and write your target into the first line.
+This plugin provides two auto commands that read the target from this file and set it. Once on the first `LspAttach`
+on any `.go`-file and secondly on each `BufWritePost` that is performed on the target file.
 
 I hope you find this useful!
