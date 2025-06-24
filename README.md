@@ -57,13 +57,21 @@ resort to 'pure' API calls if this were to prove an obstacle. Given the pervasiv
 but it is nice to know we can count on some wiggle room!
 
 ## Installation
-This plugin can be installed through regular plugin manages. I use [`packer.nvim`](https://github.com/wbthomason/packer.nvim),
-so it's the example we'll provide. The rest should be rather similar: this plugin requires no settings!
+This plugin can be installed through regular plugin managers.
 
+### [Packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
     "pcolladosoto/tinygo.nvim",
     config = function() require("tinygo").setup() end
+}
+```
+
+### [Lazy.nvim](https://github.com/wbthomason/packer.nvim)
+```lua
+return {
+    "pcolladosoto/tinygo.nvim",
+    opts = {},
 }
 ```
 
