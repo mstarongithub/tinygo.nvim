@@ -79,6 +79,7 @@ return {
 Addtionally you can provide the following options. 
 
 - `targetfile [optional]`: Defines the filename of the file this plugin autoloads its target from
+- `config_file [optional]`: Defines the path to config file.
 
 ## Usage
 This plugin provides three different user commands:
@@ -91,8 +92,16 @@ This plugin provides three different user commands:
 
 - `:TinyGoEnv`: This commmand prints the currently configured target, `GOROOT` and `GOFLAGS`.
 
-Alternatively you can add a file (default: `.tinygo`) into your cwd and write your target into the first line.
-This plugin provides two auto commands that read the target from this file and set it. Once on the first `LspAttach`
-on any `.go`-file and secondly on each `BufWritePost` that is performed on the target file.
+Alternatively you can add a file (default: `.tinygo.json`) into your cwd and set your target there.
+This plugin automatically loads this config file on startup and dynamically reloads when the config
+file is changed.
+
+Here is an example of the config file and its possible options.
+
+```json
+{
+  "target": "pico" // Auto sets the target to the provided value. Has to one of 'tinygo targets' results.
+}
+```
 
 I hope you find this useful!
