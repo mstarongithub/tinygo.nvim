@@ -78,7 +78,6 @@ return {
 ## Options
 Addtionally you can provide the following options. 
 
-- `targetfile [optional]`: Defines the filename of the file this plugin autoloads its target from
 - `config_file [optional]`: Defines the path to config file.
 
 ## Usage
