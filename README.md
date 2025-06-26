@@ -99,7 +99,7 @@ Here is an example of the config file and its possible options.
 
 ```json
 {
-  "target": "pico" // Auto sets the target to the provided value. Has to one of 'tinygo targets' results.
+  "target": "pico" // Auto sets the target to the provided value. Has to be one of 'tinygo targets' results.
 }
 ```
 
