@@ -67,7 +67,7 @@ use {
 }
 ```
 
-### [Lazy.nvim](https://github.com/wbthomason/packer.nvim)
+### [Lazy.nvim](https://github.com/folke/lazy.nvim)
 ```lua
 return {
     "pcolladosoto/tinygo.nvim",
