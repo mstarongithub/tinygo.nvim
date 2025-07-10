@@ -144,7 +144,10 @@ function M.applyConfigFile()
 		return
 	end
 
-	vim.cmd.TinyGoSetTarget(cfg["target"])
+	local target = cfg["target"]
+	if target then
+		vim.cmd.TinyGoSetTarget(cfg["target"])
+	end
 end
 
 return M
