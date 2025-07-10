@@ -24,8 +24,8 @@ to be extremely helpful:
 - [Unofficial Neovim Lua Guide](https://github.com/nanotee/nvim-lua-guide): A great primer on using Lua within Neovim.
 
 - [Linode Neovim Tutorial](https://www.linode.com/docs/guides/write-a-neovim-plugin-with-lua/): Despite the website being
-   very choppy (at least on Safari) and throwing some Vim Script in the mix, this tutorial presents a nice overall structure
-   of what a Neovim plugin looks like.
+  very choppy (at least on Safari) and throwing some Vim Script in the mix, this tutorial presents a nice overall structure
+  of what a Neovim plugin looks like.
 
 - [Lua 5.1 Reference](http://www.lua.org/manual/5.1/manual.html): For everything Lua, nothing beats the official reference.
 
@@ -76,9 +76,9 @@ return {
 ```
 
 ## Options
-Addtionally you can provide the following options. 
+Addtionally you can provide the following options.
 
-- `config_file [optional]`: Defines the path to config file.
+- **`config_file`** [string]: Defines the path to config file.
 
 ## Usage
 This plugin provides three different user commands:
@@ -99,8 +99,10 @@ Here is an example of the config file and its possible options.
 
 ```json
 {
-  "target": "pico" // Auto sets the target to the provided value. Has to be one of 'tinygo targets' results.
+  "target": "pico"
 }
 ```
+
+- **`target`** [string]: Auto sets the target to the provided value. Has to be one of 'tinygo targets' results.
 
 I hope you find this useful!
