@@ -37,7 +37,15 @@ function M.setup(opts)
 	vim.api.nvim_create_user_command("TinyGoTargets", M.printTargets, {nargs = 0})
 	vim.api.nvim_create_user_command("TinyGoEnv", M.printEnv, {nargs = 0})
 
-	vim.api.nvim_create_autocmd({"LspAttach"}, {once=true, pattern="*.go", callback=M.applyConfigFile})
+	vim.api.nvim_create_autocmd({"LspAttach"}, {
+		group=vim.api.nvim_create_augroup("TinyGoApplyConfigFile", {}),
+		pattern="*.go",
+		callback=function (ev)
+			if #vim.lsp.get_clients({bufnr=ev.buf, name="gopls"}) > 0 and M.currentTarget == "original" then
+				M.applyConfigFile()
+			end
+		end,
+	})
 	vim.api.nvim_create_autocmd({"BufWritePost"}, {pattern=M.config_file, callback=M.applyConfigFile})
 end
 
