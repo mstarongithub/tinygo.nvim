@@ -1,11 +1,17 @@
-local M = {}
+local M = {
+	config_file = ".tinygo.json",
+}
 
-function M.setup()
+function M.setup(opts)
 	local ok, goEnv = pcall(vim.fn.system, "go env -json")
 	if not ok then vim.print("go is not in the PATH..."); return end
 
 	local ok, goEnvJSON = pcall(vim.fn.json_decode, goEnv)
 	if not ok then vim.print("error parsing the go environment"); return end
+
+	if opts["config_file"] then
+		M.config_file = opts["config_file"]
+	end
 
 	M["originalGOROOT"]  = goEnvJSON["GOROOT"]
 	M["originalGOFLAGS"] = goEnvJSON["GOFLAGS"]
@@ -30,6 +36,17 @@ function M.setup()
 	vim.api.nvim_create_user_command("TinyGoSetTarget", M.setTarget, {nargs = 1, complete = M.targetOptions})
 	vim.api.nvim_create_user_command("TinyGoTargets", M.printTargets, {nargs = 0})
 	vim.api.nvim_create_user_command("TinyGoEnv", M.printEnv, {nargs = 0})
+
+	vim.api.nvim_create_autocmd({"LspAttach"}, {
+		group=vim.api.nvim_create_augroup("TinyGoApplyConfigFile", {}),
+		pattern="*.go",
+		callback=function (ev)
+			if #vim.lsp.get_clients({bufnr=ev.buf, name="gopls"}) > 0 and M.currentTarget == "original" then
+				M.applyConfigFile()
+			end
+		end,
+	})
+	vim.api.nvim_create_autocmd({"BufWritePost"}, {pattern=M.config_file, callback=M.applyConfigFile})
 end
 
 -- As seen on https://neovim.io/doc/user/api.html#nvim_create_user_command(), autocompletions written in
@@ -62,7 +79,7 @@ function M.setTarget(opts)
 				GOROOT  = M["originalGOROOT"],
 				GOFLAGS = M["originalGOFLAGS"]
 			}
-		 })
+		})
 		return
 	end
 
@@ -96,7 +113,7 @@ function M.setTarget(opts)
 			GOROOT = currentGOROOT,
 			GOFLAGS = currentGOFLAGS
 		}
-	 })
+	})
 end
 
 function M.printTargets()
@@ -113,6 +130,32 @@ function M.printEnv()
 		"Current Target: %q\nCurrent GOROOT: %q\nCurrent GOFLAGS: %q",
 		M["currentTarget"], M["currentGOROOT"], M["currentGOFLAGS"]
 	))
+end
+
+function M.applyConfigFile()
+	local f = io.open(M.config_file, "r")
+	if not f then
+		return
+	end
+
+	local ok, rawCfg = pcall(f.read, f, "a")
+	if not ok then
+		vim.print("error reading config file")
+		f:close()
+		return
+	end
+	f:close()
+
+	local ok, cfg = pcall(vim.json.decode, rawCfg)
+	if not ok then
+		vim.print("error decoding config file")
+		return
+	end
+
+	local target = cfg["target"]
+	if target then
+		vim.cmd.TinyGoSetTarget(cfg["target"])
+	end
 end
 
 return M

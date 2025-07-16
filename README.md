@@ -24,8 +24,8 @@ to be extremely helpful:
 - [Unofficial Neovim Lua Guide](https://github.com/nanotee/nvim-lua-guide): A great primer on using Lua within Neovim.
 
 - [Linode Neovim Tutorial](https://www.linode.com/docs/guides/write-a-neovim-plugin-with-lua/): Despite the website being
-   very choppy (at least on Safari) and throwing some Vim Script in the mix, this tutorial presents a nice overall structure
-   of what a Neovim plugin looks like.
+  very choppy (at least on Safari) and throwing some Vim Script in the mix, this tutorial presents a nice overall structure
+  of what a Neovim plugin looks like.
 
 - [Lua 5.1 Reference](http://www.lua.org/manual/5.1/manual.html): For everything Lua, nothing beats the official reference.
 
@@ -57,15 +57,28 @@ resort to 'pure' API calls if this were to prove an obstacle. Given the pervasiv
 but it is nice to know we can count on some wiggle room!
 
 ## Installation
-This plugin can be installed through regular plugin manages. I use [`packer.nvim`](https://github.com/wbthomason/packer.nvim),
-so it's the example we'll provide. The rest should be rather similar: this plugin requires no settings!
+This plugin can be installed through regular plugin managers.
 
+### [Packer.nvim](https://github.com/wbthomason/packer.nvim)
 ```lua
 use {
     "pcolladosoto/tinygo.nvim",
     config = function() require("tinygo").setup() end
 }
 ```
+
+### [Lazy.nvim](https://github.com/folke/lazy.nvim)
+```lua
+return {
+    "pcolladosoto/tinygo.nvim",
+    opts = {},
+}
+```
+
+## Options
+Addtionally you can provide the following options.
+
+- **`config_file`** [string]: Defines the path to config file.
 
 ## Usage
 This plugin provides three different user commands:
@@ -77,5 +90,19 @@ This plugin provides three different user commands:
 - `:TinyGoTargets`: This command will simply list available TinyGo targets, excluding `original`.
 
 - `:TinyGoEnv`: This commmand prints the currently configured target, `GOROOT` and `GOFLAGS`.
+
+Alternatively you can add a file (default: `.tinygo.json`) into your cwd and set your target there.
+This plugin automatically loads this config file on startup and dynamically reloads when the config
+file is changed.
+
+Here is an example of the config file and its possible options.
+
+```json
+{
+  "target": "pico"
+}
+```
+
+- **`target`** [string]: Auto sets the target to the provided value. Has to be one of 'tinygo targets' results.
 
 I hope you find this useful!
