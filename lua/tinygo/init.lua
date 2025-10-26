@@ -74,12 +74,16 @@ function M.setTarget(opts)
 		M["currentGOROOT"] = M["originalGOROOT"]
 		M["currentGOFLAGS"] = M["originalGOFLAGS"]
 
-		lspconfig.gopls.setup({
+		lspconfig.gopls = vim.tbl_deep_extend("force", vim.lsp.config.gopls or {}, {
 			cmd_env = {
 				GOROOT  = M["originalGOROOT"],
 				GOFLAGS = M["originalGOFLAGS"]
 			}
-		})
+		}
+    vim.lsp.stop_client(vim.lsp.get_clients({ name = "gopls" }))
+		vim.defer_fn(function()
+		  vim.lsp.enable("gopls")
+		end, 100)
 		return
 	end
 
