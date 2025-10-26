@@ -116,12 +116,16 @@ function M.setTarget(opts)
   M["currentGOFLAGS"] = currentGOFLAGS
 
   -- This'll restart the LSP server!
-  lspconfig.gopls.setup({
+  lspconfig.gopls = vim.tbl_deep_extend("force", vim.lsp.config.gopls or {}, {
     cmd_env = {
-      GOROOT = currentGOROOT,
+      GOROOT  = currentGOROOT,
       GOFLAGS = currentGOFLAGS
     }
   })
+  vim.lsp.stop_client(vim.lsp.get_clients({ name = "gopls" }))
+  vim.defer_fn(function()
+    vim.lsp.enable("gopls")
+  end, 100)
 end
 
 function M.printTargets()
